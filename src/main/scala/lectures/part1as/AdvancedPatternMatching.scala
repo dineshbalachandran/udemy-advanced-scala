@@ -8,14 +8,14 @@ object AdvancedPatternMatching extends App {
     case _ =>
   }
 
-  class Person(val name:String, val age:Int)
+  class Person(val name:String, val age:Int, val height:Int)
 
   object Person {
     def unapply(p: Person): Option[(String, Int)] = if (p.age < 21) Some((p.name, p.age)) else None
     def unapply(age: Int): Option[String] = Some(if (age<21) "minor" else "major")
   }
 
-  val bob = new Person("Bob", 18)
+  val bob = new Person("Bob", 18, 120)
   val greeting = bob match {
     case Person(n, a) => s"Hi, my name is $n and I am $a years old."
   }
@@ -63,7 +63,7 @@ object AdvancedPatternMatching extends App {
 
   println(humanDescription)
 
-  //decomposing sequences
+  //decomposing sequences using unapplySeq
   val vararg = numbers match {
     case List(1, _*) => "starting with 1"
   }

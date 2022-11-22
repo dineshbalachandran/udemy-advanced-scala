@@ -7,12 +7,19 @@ object DarkSugars {
   //1: method with single param
   def singleArgMethod(arg: Int): String = s"$arg little ducks"
 
+  //can be written as a block expression
   val description = singleArgMethod {
     //write some complex code in this code block expression
     42
   }
 
-  val aTryInstance = Try {
+  //here Try's companion object apply method is called
+  val aTryInstance: Try[Nothing] =  {
+    throw new RuntimeException
+  }
+
+  //the above is equivalent to
+  val anotherTryInstance = Try {
     throw new RuntimeException
   }
 
@@ -20,7 +27,7 @@ object DarkSugars {
     x + 1
   }
 
-  //2: single abstract method, instances of traits with single method can be reduced to lambdas
+  //2: single abstract method, instances of traits with single abstract method can be reduced to lambdas
   trait Action {
     def act(x: Int): Int
   }
@@ -36,9 +43,10 @@ object DarkSugars {
     override def run(): Unit = println("hello Scala")
   })
 
+  //While we can use this with Runnable, can't use this method with Thread, since Thread is not abstract
   val aSweeterThread: Thread = new Thread(() => println("sweet, Scala"))
 
-  //a class with only one method not implemented
+  //a class with only one method not implemented, can also use the single abstract method syntax sugar
   abstract class AnAbstractType {
     def implemented: Int = 23
     def f(a: Int): Unit
@@ -48,9 +56,8 @@ object DarkSugars {
   val anAbstractInstance: AnAbstractType = (a: Int) => println(s"$a sweet")
 
   //3, the :: and #:: methods which are special
-
   val prependedList = 2 :: List(3, 4) //equivalent to List(3, 4).::(2)
-  //the last character of the method if it is :, then that method is right associative
+  //the last character of the method if it is ':', then that method is right associative
 
   class MyStream[T] {
     def -->:(value: T): MyStream[T] = this
@@ -67,7 +74,7 @@ object DarkSugars {
 
   lilly `and then said` "Scala is so sweet"
 
-  //#5: infix types (used primarily in Type level programming
+  //#5: infix types (used primarily in Type level programming)
   class Composite[A, B]
   val composite: Composite[Int, String] = ???
   val anotherComposite: Int Composite String = ??? //equivalent to above
@@ -75,7 +82,7 @@ object DarkSugars {
   class -->[A, B]
   val towards: Int --> String = ??? //same as -->[Int, String]
 
-  //#6 update() is special similar to apply()
+  //#6 update() is special similar to apply(), usually used for Mutable types
   val anArray = Array(1,2,3)
   anArray(2) =  7 //same as anArray.update(2, 7)
 
@@ -83,7 +90,7 @@ object DarkSugars {
   class Mutable {
     private var internalMember: Int = 0
     def member: Int = internalMember //getter
-    def member_=(value: Int): Unit =
+    def member_=(value: Int): Unit = //Note, the use of '_=' in the method name
       internalMember = value //setter
   }
 

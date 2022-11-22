@@ -85,6 +85,17 @@ object Recap extends App {
   } yield num + "_" + char
   println(pairs)
 
+  val (list1, list2, list3) = (List(1, 2, 3), List(10, 20, 30), List(100, 200, 300))
+  val threes1 = for {
+    a <- list1
+    b <- list2.map(_*a)
+    c <- list3.map(_*b)
+  } yield c*2
+
+  println(threes1)
+
+  println(list1.flatMap(a => list2.map(_*a).flatMap(b => list3.map(_*b).map(c => c*2))))
+
   val aMap = Map(
     "Dinesh" -> 123,
     "Som" -> 768
