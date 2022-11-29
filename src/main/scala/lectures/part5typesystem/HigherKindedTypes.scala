@@ -1,5 +1,6 @@
 package lectures.part5typesystem
 
+import lectures.part5typesystem.HigherKindedTypes.Scala3HKTTypeClass.multiply2
 
 
 object HigherKindedTypes extends App {
@@ -56,7 +57,6 @@ object HigherKindedTypes extends App {
         a <- monadA
         b <- monadB
       } yield (a, b)
-
   }
 
 
@@ -93,11 +93,22 @@ object HigherKindedTypes extends App {
         b <- fb
       } yield (a, b)
 
+    //alternative definition of multiply using Context Bound (F[_]: Monad)
+    //which is perhaps the most best way to define this
+    //the 'f' above is not actually used in the method, however is required to compile
+    def multiply2[F[_]: Monad, A, B](fa: F[A], fb: F[B]): F[(A, B)] =
+      for {
+        a <- fa
+        b <- fb
+      } yield (a, b)
+
   }
 
   import lectures.part5typesystem.HigherKindedTypes.Scala3HKTTypeClass.multiply
   println(multiply(List(1, 2), List("a", "b", "c")))
   println(multiply[Option, Int, String](Some(2), Some("scala")))
+
+  println(multiply2[Option, Int, String](Some(3), Some("dinesh")))
 
 
   object Scala3HKTTypeClassV2 {
@@ -123,6 +134,12 @@ object HigherKindedTypes extends App {
     }
 
     def multiply[F[_], A, B](fa: F[A], fb: F[B])(using f: Monad[F]): F[(A, B)] =
+      for {
+        a <- fa
+        b <- fb
+      } yield (a, b)
+
+    def multiply2[F[_] : Monad, A, B](fa: F[A], fb: F[B]): F[(A, B)] =
       for {
         a <- fa
         b <- fb
